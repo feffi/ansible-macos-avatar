@@ -1,0 +1,53 @@
+---
+- name: Create avatar directory
+  become: true
+  file:
+    path: "/Library/User Pictures/Users"
+    state: directory
+    mode: 0755
+
+- set_fact:
+    macos_avatar.basename: "{{ ansible_ssh_user }}.jpg"
+  when: url is defined
+
+- name: Copy remote picture
+  become: true
+  get_url:
+    url: "{{ macos_avatar.url }}"
+    dest: "/Library/User Pictures/Users/{{ macos_avatar.basename }}"
+    mode: 0644
+    force: true
+  when: macos_avatar.url is defined
+
+- name: Read current value of JPEGPhoto
+  command: dscl . read /Users/"{{ ansible_ssh_user }}" JPEGPhoto
+  register: "dscl_read_jpegphoto_result"
+  always_run: yes
+  changed_when: false
+  when: macos_avatar.basename is defined
+
+- name: Read current value of Picture
+  command: dscl . read /Users/"{{ ansible_ssh_user }}" Picture
+  register: "dscl_read_picture_result"
+  always_run: yes
+  changed_when: false
+  when: macos_avatar.basename is defined
+
+- name: Delete HEX picture data
+  become: true
+  command: dscl . delete /Users/"{{ ansible_ssh_user }}" JPEGPhoto
+  always_run: yes
+  when: '"No such key" not in "{{ dscl_read_jpegphoto_result.stderr }}"'
+  when: macos_avatar.basename is defined
+
+- name: Delete existing user account picture
+  become: true
+  command: dscl . delete /Users/"{{ ansible_ssh_user }}" Picture
+  always_run: yes
+  when: 'not ("/Library/User Pictures/Users/{{ macos_avatar.basename }}" in "{{ dscl_read_picture_result.stdout }}" and copy_result.changed == false)'
+
+- name: Add user account picture
+  become: true
+  command: dscl . create /Users/"{{ ansible_ssh_user }}" Picture "/Library/User Pictures/Users/{{ macos_avatar.basename }}"
+  always_run: yes
+  when: 'not ("/Library/User Pictures/Users/{{ macos_avatar.basename }}" in "{{ dscl_read_picture_result.stdout }}" and copy_result.changed == false)'
