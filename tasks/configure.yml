@@ -8,7 +8,7 @@
 
 - set_fact:
     macos_avatar_basename: "{{ ansible_ssh_user }}.jpg"
-  when: url is defined
+  when: macos_avatar.url is defined
 
 - name: Copy remote picture
   become: true
