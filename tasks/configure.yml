@@ -37,8 +37,7 @@
   become: true
   command: dscl . delete /Users/"{{ ansible_ssh_user }}" JPEGPhoto
   always_run: yes
-  when: '"No such key" not in "{{ dscl_read_jpegphoto_result.stderr }}"'
-  when: macos_avatar_basename is defined
+  when: '"No such key" not in "{{ dscl_read_jpegphoto_result.stderr }}"' and macos_avatar_basename is defined
 
 - name: Delete existing user account picture
   become: true
