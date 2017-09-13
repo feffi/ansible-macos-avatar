@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Kevin Wennemuth
-  description: A Ansible role to manage personal avatar pictures in macOS.
+  description: Ansible role to manage personal avatar pictures in macOS.
   license: MIT
   min_ansible_version: 2.3
   platforms:

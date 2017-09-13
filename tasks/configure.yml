@@ -5,6 +5,11 @@
     path: "/Library/User Pictures/Users"
     state: directory
     mode: 0755
+  register: macos_avatar_touch_log
+  changed_when: macos_avatar_touch_log.diff.before.state is defined and macos_avatar_touch_log.diff.before.state != "directory"
+
+- debug:
+    msg: "{{ macos_avatar_touch_log.diff }}"
 
 - set_fact:
     macos_avatar_basename: "{{ ansible_ssh_user }}.jpg"
@@ -22,31 +27,31 @@
 - name: Read current value of JPEGPhoto
   command: dscl . read /Users/"{{ ansible_ssh_user }}" JPEGPhoto
   register: "dscl_read_jpegphoto_result"
-  always_run: yes
+  check_mode: false
   changed_when: false
   when: macos_avatar_basename is defined
 
 - name: Read current value of Picture
   command: dscl . read /Users/"{{ ansible_ssh_user }}" Picture
   register: "dscl_read_picture_result"
-  always_run: yes
+  check_mode: false
   changed_when: false
   when: macos_avatar_basename is defined
 
 - name: Delete HEX picture data
   become: true
   command: dscl . delete /Users/"{{ ansible_ssh_user }}" JPEGPhoto
-  always_run: yes
-  when: '"No such key" not in "{{ dscl_read_jpegphoto_result.stderr }}"' and macos_avatar_basename is defined
+  check_mode: false
+  when: ( "No such key" not in dscl_read_jpegphoto_result.stderr ) and macos_avatar_basename is defined
 
 - name: Delete existing user account picture
   become: true
   command: dscl . delete /Users/"{{ ansible_ssh_user }}" Picture
-  always_run: yes
-  when: 'not ("/Library/User Pictures/Users/{{ macos_avatar_basename }}" in "{{ dscl_read_picture_result.stdout }}" and copy_result.changed == false)'
+  check_mode: false
+  when: not ( "/Library/User Pictures/Users/" + macos_avatar_basename in dscl_read_picture_result.stdout )
 
 - name: Add user account picture
   become: true
   command: dscl . create /Users/"{{ ansible_ssh_user }}" Picture "/Library/User Pictures/Users/{{ macos_avatar_basename }}"
-  always_run: yes
-  when: 'not ("/Library/User Pictures/Users/{{ macos_avatar_basename }}" in "{{ dscl_read_picture_result.stdout }}" and copy_result.changed == false)'
+  check_mode: false
+  when: not ( "/Library/User Pictures/Users/" + macos_avatar_basename in dscl_read_picture_result.stdout )

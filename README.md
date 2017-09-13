@@ -1,5 +1,5 @@
 # ansible-macos-avatar
-A Ansible role to manage personal avatar pictures in macOS.
+Ansible role to manage personal avatar pictures in macOS.
 
 [![Build Status](https://img.shields.io/travis/feffi/ansible-macos-avatar.svg)](https://travis-ci.org/feffi/ansible-macos-avatar) [![Github All Releases](https://img.shields.io/github/downloads/feffi/ansible-macos-avatar/total.svg)](https://github.com/feffi/ansible-macos-avatar) [![GitHub forks](https://img.shields.io/github/forks/feffi/ansible-macos-avatar.svg?style=social&label=Fork)](https://github.com/feffi/ansible-macos-avatar) [![GitHub stars](https://img.shields.io/github/stars/feffi/ansible-macos-avatar.svg?style=social&label=Star)](https://github.com/feffi/ansible-macos-avatar) [![GitHub watchers](https://img.shields.io/github/watchers/feffi/ansible-macos-avatar.svg?style=social&label=Watch)](https://github.com/feffi/ansible-macos-avatar) [![Twitter Follow](https://img.shields.io/twitter/follow/feffi1.svg?style=social&label=Follow)](https://twitter.com/feffi1) [![License](http://img.shields.io/:license-mit-blue.svg)](https://github.com/feffi/ansible-macos-avatar/blob/master/LICENSE)
 
