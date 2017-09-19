@@ -11,6 +11,9 @@ galaxy_info:
   galaxy_tags:
     - system
     - osx
+    - macos
     - config
     - avatar
+    - userpicture
+    - login
 dependencies: []
