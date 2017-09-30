@@ -9,7 +9,7 @@
   changed_when: macos_avatar_touch_log.diff.before.state is defined and macos_avatar_touch_log.diff.before.state != "directory"
 
 - set_fact:
-    macos_avatar_basename: "{{ ansible_ssh_user }}.jpg"
+    macos_avatar_basename: "{{ ansible_user_id }}.jpg"
   when: macos_avatar.url is defined
 
 - name: Copy remote picture
@@ -22,14 +22,14 @@
   when: macos_avatar.url is defined
 
 - name: Read current value of JPEGPhoto
-  command: dscl . read /Users/"{{ ansible_ssh_user }}" JPEGPhoto
+  command: dscl . read /Users/"{{ ansible_user_id }}" JPEGPhoto
   register: "dscl_read_jpegphoto_result"
   check_mode: false
   changed_when: false
   when: macos_avatar_basename is defined
 
 - name: Read current value of Picture
-  command: dscl . read /Users/"{{ ansible_ssh_user }}" Picture
+  command: dscl . read /Users/"{{ ansible_user_id }}" Picture
   register: "dscl_read_picture_result"
   check_mode: false
   changed_when: false
@@ -37,18 +37,18 @@
 
 - name: Delete HEX picture data
   become: true
-  command: dscl . delete /Users/"{{ ansible_ssh_user }}" JPEGPhoto
+  command: dscl . delete /Users/"{{ ansible_user_id }}" JPEGPhoto
   check_mode: false
   when: ( "No such key" not in dscl_read_jpegphoto_result.stderr ) and macos_avatar_basename is defined
 
 - name: Delete existing user account picture
   become: true
-  command: dscl . delete /Users/"{{ ansible_ssh_user }}" Picture
+  command: dscl . delete /Users/"{{ ansible_user_id }}" Picture
   check_mode: false
   when: not ( "/Library/User Pictures/Users/" + macos_avatar_basename in dscl_read_picture_result.stdout )
 
 - name: Add user account picture
   become: true
-  command: dscl . create /Users/"{{ ansible_ssh_user }}" Picture "/Library/User Pictures/Users/{{ macos_avatar_basename }}"
+  command: dscl . create /Users/"{{ ansible_user_id }}" Picture "/Library/User Pictures/Users/{{ macos_avatar_basename }}"
   check_mode: false
   when: not ( "/Library/User Pictures/Users/" + macos_avatar_basename in dscl_read_picture_result.stdout )
