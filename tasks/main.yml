@@ -4,3 +4,4 @@
   when: DEBUG | d() | bool
 
 - include_tasks: configure.yml
+  when: macos_avatar.url
